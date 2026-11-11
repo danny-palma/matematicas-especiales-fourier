@@ -1,5 +1,5 @@
 /**
- * app.js - Controlador principal de la interfaz y visualización interactiva
+ * app.js - Controlador principal de la interfaz con especificación Material Design 3 (M3)
  * Matemáticas Especiales - Corte 3 (Universidad ECCI)
  * Autor: Danny Palma
  */
@@ -50,68 +50,67 @@ document.addEventListener('DOMContentLoaded', () => {
   const sliderNVal = document.getElementById('slider-n-value');
   const sliderBVal = document.getElementById('slider-b-value');
 
-  // Inicializar UI de Portada
+  // Inicializar UI de Portada en M3
   function updateHeaderStudentInfo() {
     studentBadge.innerHTML = `
-      <div class="flex flex-wrap items-center gap-2 text-sm text-blue-100">
-        <span class="font-bold text-white bg-white/20 px-2.5 py-0.5 rounded-full">${state.studentData.studentName}</span>
-        <span>•</span>
-        <span>${state.studentData.studentCode}</span>
-        <span>•</span>
-        <span class="text-amber-300 font-medium">${state.studentData.subject}</span>
-        <span>•</span>
-        <span>Docente: ${state.studentData.professorName}</span>
+      <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-blue-100">
+        <span class="inline-flex items-center gap-1.5 font-bold text-white bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm border border-white/25">
+          <span class="material-symbols-outlined text-sm">person</span>
+          ${state.studentData.studentName}
+        </span>
+        <span class="text-blue-300">•</span>
+        <span class="bg-black/20 px-2.5 py-0.5 rounded-full font-mono">${state.studentData.studentCode}</span>
+        <span class="text-blue-300">•</span>
+        <span class="text-amber-300 font-semibold">${state.studentData.subject}</span>
+        <span class="text-blue-300">•</span>
+        <span class="text-blue-200">Docente: ${state.studentData.professorName}</span>
       </div>
     `;
   }
 
-  // Selector de Taller (5 vs 6)
+  // M3 Segmented Buttons: Selector de Taller (5 vs 6)
   const tabTaller5 = document.getElementById('tab-taller-5');
   const tabTaller6 = document.getElementById('tab-taller-6');
   const exercisesPillsContainer = document.getElementById('exercise-pills-container');
 
-  function renderExercisePills() {
+  function renderExerciseChips() {
     exercisesPillsContainer.innerHTML = '';
     const exercisesInTaller = Object.values(ExercisesData).filter(
       (ex) => ex.taller === state.currentTaller
     );
 
     exercisesInTaller.forEach((ex) => {
-      const pill = document.createElement('button');
-      pill.className = `exercise-pill px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
-        ex.id === state.currentExerciseId
-          ? 'active bg-[#123062] text-white border-[#123062] shadow-md'
-          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
-      }`;
-      pill.textContent = `${ex.number}: ${ex.title}`;
-      pill.addEventListener('click', () => {
+      const chip = document.createElement('button');
+      const isSelected = ex.id === state.currentExerciseId;
+      chip.className = `m3-chip ${isSelected ? 'active' : ''}`;
+      chip.innerHTML = `
+        <span class="material-symbols-outlined text-base chip-icon">${isSelected ? 'check_circle' : 'functions'}</span>
+        <span>${ex.number}: ${ex.title}</span>
+      `;
+      chip.addEventListener('click', () => {
         state.currentExerciseId = ex.id;
-        renderExercisePills();
+        renderExerciseChips();
         loadCurrentExercise();
       });
-      exercisesPillsContainer.appendChild(pill);
+      exercisesPillsContainer.appendChild(chip);
     });
   }
 
   tabTaller5.addEventListener('click', () => {
     state.currentTaller = 5;
-    tabTaller5.classList.add('active', 'bg-[#123062]', 'text-white');
-    tabTaller5.classList.remove('text-slate-600', 'hover:bg-slate-100');
-    tabTaller6.classList.remove('active', 'bg-[#123062]', 'text-white');
-    tabTaller6.classList.add('text-slate-600', 'hover:bg-slate-100');
+    tabTaller5.classList.add('active');
+    tabTaller6.classList.remove('active');
     state.currentExerciseId = 't5_ej1';
-    renderExercisePills();
+    renderExerciseChips();
     loadCurrentExercise();
   });
 
   tabTaller6.addEventListener('click', () => {
     state.currentTaller = 6;
-    tabTaller6.classList.add('active', 'bg-[#123062]', 'text-white');
-    tabTaller6.classList.remove('text-slate-600', 'hover:bg-slate-100');
-    tabTaller5.classList.remove('active', 'bg-[#123062]', 'text-white');
-    tabTaller5.classList.add('text-slate-600', 'hover:bg-slate-100');
+    tabTaller6.classList.add('active');
+    tabTaller5.classList.remove('active');
     state.currentExerciseId = 't6_ej2_gen';
-    renderExercisePills();
+    renderExerciseChips();
     loadCurrentExercise();
   });
 
@@ -122,11 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Encabezado
     exerciseTitle.textContent = `${ex.section} - ${ex.number}: ${ex.title}`;
-    exerciseSubtitle.textContent = `Taller ${ex.taller} | Intervalo: ${ex.interval}`;
+    exerciseSubtitle.textContent = `Taller ${ex.taller} • Intervalo de análisis: ${ex.interval}`;
     exerciseFormula.innerHTML = `$$${ex.definitionLatex}$$`;
-    symmetryBadge.textContent = ex.symmetry;
-    periodBadge.textContent = ex.period;
-    intervalBadge.textContent = `Dominio: ${ex.interval}`;
+    
+    // Badges con iconos
+    symmetryBadge.querySelector('.symmetry-text').textContent = ex.symmetry;
+    periodBadge.querySelector('.period-text').textContent = ex.period;
+    intervalBadge.querySelector('.interval-text').textContent = `Dominio: ${ex.interval}`;
 
     // Mostrar el slider correspondiente
     if (ex.type === 'series') {
@@ -142,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Renderizar Gráfico Plotly
     renderPlot(ex);
 
-    // Renderizar Memoria Analítica
+    // Renderizar Memoria Analítica en M3 Cards
     renderAnalyticalSteps(ex);
 
     // Renderizar Análisis de Dirichlet y Gibbs
@@ -163,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Renderizar Gráfica Interactiva con Plotly.js
+  // Renderizar Gráfica con Plotly en estética Material Design 3
   function renderPlot(ex) {
     const params = {};
     if (ex.type === 'series') {
@@ -186,13 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
       name: 'f(x) Original',
       mode: 'lines',
       line: {
-        color: '#0f172a',
+        color: '#1e293b',
         width: 2.5,
         dash: 'dash'
       }
     });
 
-    // Colores para las curvas armónicas / cortes progresivos
+    // Paleta M3 para las curvas
     const standardColors = ['#0284c7', '#10b981', '#f59e0b'];
 
     data.curves.forEach((curve, idx) => {
@@ -203,8 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
           name: curve.name,
           mode: 'lines',
           line: {
-            color: '#dc2626', // Rojo para el personalizado
-            width: 2.5
+            color: '#dc2626',
+            width: 2.8
           }
         });
       } else {
@@ -221,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Puntos de Dirichlet
+    // Puntos de Dirichlet destacados
     if (data.discontinuities && data.discontinuities.length > 0) {
       const discX = data.discontinuities.map((d) => d.x);
       const discY = data.discontinuities.map((d) => d.midpoint);
@@ -232,21 +233,22 @@ document.addEventListener('DOMContentLoaded', () => {
       traces.push({
         x: discX,
         y: discY,
-        name: 'Convergencia Dirichlet',
+        name: 'Dirichlet',
         mode: 'markers',
         text: discText,
         marker: {
           color: '#e11d48',
-          size: 9,
-          symbol: 'diamond'
+          size: 10,
+          symbol: 'diamond',
+          line: { color: '#ffffff', width: 1.5 }
         }
       });
     }
 
     const layout = {
       title: {
-        text: `<b>${ex.title}</b> - Superposición Armónica e Integral`,
-        font: { size: 16, color: '#123062', family: 'Noto Sans, sans-serif' }
+        text: `<b>${ex.title}</b> • Superposición Armónica e Integral`,
+        font: { size: 16, color: '#123062', family: 'Roboto, sans-serif' }
       },
       xaxis: {
         title: 'Variable independiente x',
@@ -265,7 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
         yanchor: 'bottom',
         y: 1.02,
         xanchor: 'right',
-        x: 1
+        x: 1,
+        font: { family: 'Roboto, sans-serif', size: 12 }
       },
       margin: { l: 55, r: 25, t: 70, b: 50 },
       hovermode: 'closest',
@@ -283,16 +286,18 @@ document.addEventListener('DOMContentLoaded', () => {
     Plotly.newPlot(plotContainer, traces, layout, config);
   }
 
-  // Renderizar Pasos de la Memoria Analítica
+  // Renderizar Pasos de la Memoria Analítica en tarjetas M3
   function renderAnalyticalSteps(ex) {
     analyticalContainer.innerHTML = '';
     ex.analyticalSteps.forEach((step, index) => {
       const stepCard = document.createElement('div');
-      stepCard.className = 'border border-slate-200 rounded-lg p-5 bg-white shadow-sm hover:border-blue-200 transition-all';
+      stepCard.className = 'm3-card-sub p-6';
       stepCard.innerHTML = `
-        <h4 class="text-base font-bold text-[#123062] mb-3 flex items-center gap-2">
-          <span class="w-7 h-7 rounded-full bg-blue-100 text-[#123062] text-xs flex items-center justify-center font-bold">${index + 1}</span>
-          ${step.title}
+        <h4 class="text-base font-bold text-[--md-sys-color-primary] mb-3 flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-full bg-[--md-sys-color-primary-container] text-[--md-sys-color-on-primary-container] text-xs flex items-center justify-center font-bold">
+            ${index + 1}
+          </span>
+          <span>${step.title}</span>
         </h4>
         <div class="step-content text-slate-700 text-sm leading-relaxed">
           ${step.content.replace(/\n/g, '<br>')}
@@ -302,24 +307,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Renderizar Análisis de Dirichlet y Fenómeno de Gibbs
+  // Renderizar Análisis de Dirichlet y Fenómeno de Gibbs en M3
   function renderDirichletAnalysis(ex) {
     let dirichletRows = '';
     if (ex.dirichletPoints && ex.dirichletPoints.length > 0) {
       ex.dirichletPoints.forEach((pt) => {
         dirichletRows += `
-          <tr class="border-b border-slate-100">
-            <td class="py-2 px-3 font-mono font-medium">$x = ${pt.x}$</td>
-            <td class="py-2 px-3 font-mono">$f(x^-) = ${pt.left}$</td>
-            <td class="py-2 px-3 font-mono">$f(x^+) = ${pt.right}$</td>
-            <td class="py-2 px-3 font-mono font-bold text-[#123062]">$S(x) = \\frac{${pt.left} + ${pt.right}}{2} = ${pt.mean}$</td>
+          <tr class="border-b border-slate-200">
+            <td class="py-2.5 px-3 font-mono font-medium">$x = ${pt.x}$</td>
+            <td class="py-2.5 px-3 font-mono">$f(x^-) = ${pt.left}$</td>
+            <td class="py-2.5 px-3 font-mono">$f(x^+) = ${pt.right}$</td>
+            <td class="py-2.5 px-3 font-mono font-bold text-[--md-sys-color-primary]">$S(x) = \\frac{${pt.left} + ${pt.right}}{2} = ${pt.mean}$</td>
           </tr>
         `;
       });
     } else {
       dirichletRows = `
         <tr>
-          <td colspan="4" class="py-3 px-3 text-emerald-700 font-medium">Función continua en todo su dominio. La serie/integral converge exactamente a $f(x)$ para todo $x$.</td>
+          <td colspan="4" class="py-4 px-3 text-emerald-700 font-medium">Función continua en todo su dominio. La aproximación converge exactamente a $f(x)$ para todo $x \\in \\mathbb{R}$.</td>
         </tr>
       `;
     }
@@ -327,20 +332,20 @@ document.addEventListener('DOMContentLoaded', () => {
     dirichletContainer.innerHTML = `
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Teorema de Dirichlet -->
-        <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-          <h4 class="text-sm font-bold text-[#123062] uppercase tracking-wide mb-3 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Teorema de Dirichlet en Discontinuidades
-          </h4>
-          <p class="text-xs text-slate-600 mb-3">En cada punto de discontinuidad de salto $x_0$, la serie o integral converge exactamente a la semisuma de los límites laterales:</p>
-          <div class="overflow-x-auto">
+        <div class="m3-card-sub p-6">
+          <div class="flex items-center gap-2 text-sm font-bold text-[--md-sys-color-primary] uppercase tracking-wide mb-3">
+            <span class="material-symbols-outlined text-blue-600">insights</span>
+            <span>Teorema de Dirichlet en Discontinuidades</span>
+          </div>
+          <p class="text-xs text-slate-600 mb-4">En cada discontinuidad de salto $x_0$, la serie o integral converge exactamente a la semisuma de los límites laterales:</p>
+          <div class="overflow-x-auto bg-white rounded-xl border border-slate-200">
             <table class="w-full text-xs text-left">
               <thead>
-                <tr class="bg-slate-200 text-slate-700">
-                  <th class="py-1 px-3">Punto x</th>
-                  <th class="py-1 px-3">f(x⁻)</th>
-                  <th class="py-1 px-3">f(x⁺)</th>
-                  <th class="py-1 px-3">Convergencia Dirichlet</th>
+                <tr class="bg-slate-100 text-slate-800 border-b border-slate-200">
+                  <th class="py-2 px-3 font-bold">Punto x</th>
+                  <th class="py-2 px-3 font-bold">f(x⁻)</th>
+                  <th class="py-2 px-3 font-bold">f(x⁺)</th>
+                  <th class="py-2 px-3 font-bold">Convergencia Dirichlet</th>
                 </tr>
               </thead>
               <tbody>
@@ -351,23 +356,23 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <!-- Fenómeno de Gibbs y Velocidad -->
-        <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-          <h4 class="text-sm font-bold text-[#123062] uppercase tracking-wide mb-3 flex items-center gap-2">
-            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-            Fenómeno de Gibbs y Convergencia
-          </h4>
-          <div class="space-y-2.5 text-xs text-slate-700">
-            <div>
-              <span class="font-bold text-slate-900">Sobreimpulso de Gibbs:</span>
+        <div class="m3-card-sub p-6">
+          <div class="flex items-center gap-2 text-sm font-bold text-[--md-sys-color-primary] uppercase tracking-wide mb-3">
+            <span class="material-symbols-outlined text-amber-600">warning</span>
+            <span>Fenómeno de Gibbs y Velocidad</span>
+          </div>
+          <div class="space-y-3 text-xs text-slate-700">
+            <div class="p-3 bg-white rounded-xl border border-slate-200">
+              <span class="font-bold text-slate-900 block mb-0.5">Sobreimpulso de Gibbs:</span>
               <p class="text-slate-600">${ex.gibbsOvershoot}</p>
             </div>
-            <div>
-              <span class="font-bold text-slate-900">Tasa de decaimiento asintótico:</span>
-              <p class="font-mono text-blue-800">$${ex.decayRate}$</p>
+            <div class="p-3 bg-white rounded-xl border border-slate-200">
+              <span class="font-bold text-slate-900 block mb-0.5">Tasa de decaimiento asintótico:</span>
+              <p class="font-mono text-blue-900 font-semibold">$${ex.decayRate}$</p>
             </div>
-            <div>
-              <span class="font-bold text-slate-900">Armónicos/Corte Mínimo Recomendado:</span>
-              <p class="text-emerald-700 font-semibold">$${ex.minHarmonicsRecommendation}$</p>
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+              <span class="font-bold text-emerald-950 block mb-0.5">Armónicos / Corte Mínimo Recomendado:</span>
+              <p class="text-emerald-800 font-semibold">$${ex.minHarmonicsRecommendation}$</p>
             </div>
           </div>
         </div>
@@ -390,17 +395,13 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPlot(ex);
   });
 
-  // Manejo de Pestañas Interiores (Memoria Analítica / Dirichlet / Código)
+  // Manejo de Pestañas M3 (Memoria Analítica / Dirichlet / Código)
   const subTabBtns = document.querySelectorAll('.subtab-btn');
   subTabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const targetTab = btn.getAttribute('data-subtab');
-      subTabBtns.forEach((b) => {
-        b.classList.remove('text-[#123062]', 'border-[#123062]', 'border-b-2', 'font-bold');
-        b.classList.add('text-slate-500', 'font-medium');
-      });
-      btn.classList.add('text-[#123062]', 'border-[#123062]', 'border-b-2', 'font-bold');
-      btn.classList.remove('text-slate-500', 'font-medium');
+      subTabBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
 
       document.getElementById('subtab-analitica-view').classList.toggle('hidden', targetTab !== 'analitica');
       document.getElementById('subtab-dirichlet-view').classList.toggle('hidden', targetTab !== 'dirichlet');
@@ -408,22 +409,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Botón Copiar Código Python
+  // Botón Copiar Código Python con feedback M3
   const copyBtn = document.getElementById('copy-python-code-btn');
   copyBtn.addEventListener('click', () => {
     const code = pythonCodeBlock.textContent;
     navigator.clipboard.writeText(code).then(() => {
-      const originalText = copyBtn.innerHTML;
-      copyBtn.innerHTML = `✓ ¡Copiado!`;
-      copyBtn.classList.add('bg-emerald-600');
+      copyBtn.innerHTML = `
+        <span class="material-symbols-outlined text-sm text-emerald-600">done</span>
+        <span>¡Copiado!</span>
+      `;
       setTimeout(() => {
-        copyBtn.innerHTML = originalText;
-        copyBtn.classList.remove('bg-emerald-600');
+        copyBtn.innerHTML = `
+          <span class="material-symbols-outlined text-sm">content_copy</span>
+          <span>Copiar Código</span>
+        `;
       }, 2000);
     });
   });
 
-  // Modal para editar datos estudiantiles
+  // M3 Dialog para editar datos estudiantiles
   const editModal = document.getElementById('edit-student-modal');
   const openModalBtn = document.getElementById('open-edit-modal-btn');
   const closeModalBtn = document.getElementById('close-modal-btn');
@@ -464,6 +468,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializar estado
   updateHeaderStudentInfo();
-  renderExercisePills();
+  renderExerciseChips();
   loadCurrentExercise();
 });
