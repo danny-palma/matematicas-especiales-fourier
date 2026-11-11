@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sliderNVal = document.getElementById('slider-n-value');
   const sliderBVal = document.getElementById('slider-b-value');
 
-  // Inicializar UI de Portada en M3
+  // Inicializar UI de Portada en M3 con alto contraste
   function updateHeaderStudentInfo() {
     studentBadge.innerHTML = `
       <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-blue-100">
@@ -59,11 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
           ${state.studentData.studentName}
         </span>
         <span class="text-blue-300">•</span>
-        <span class="bg-black/20 px-2.5 py-0.5 rounded-full font-mono">${state.studentData.studentCode}</span>
+        <span class="bg-black/30 text-white px-2.5 py-0.5 rounded-full font-mono text-xs border border-white/10">${state.studentData.studentCode}</span>
         <span class="text-blue-300">•</span>
-        <span class="text-amber-300 font-semibold">${state.studentData.subject}</span>
+        <span class="text-amber-300 font-bold bg-amber-950/40 px-2 py-0.5 rounded border border-amber-400/20">${state.studentData.subject}</span>
         <span class="text-blue-300">•</span>
-        <span class="text-blue-200">Docente: ${state.studentData.professorName}</span>
+        <span class="text-blue-200">Docente: <strong class="text-white">${state.studentData.professorName}</strong></span>
       </div>
     `;
   }
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isSelected = ex.id === state.currentExerciseId;
       chip.className = `m3-chip ${isSelected ? 'active' : ''}`;
       chip.innerHTML = `
-        <span class="material-symbols-outlined text-base chip-icon">${isSelected ? 'check_circle' : 'functions'}</span>
+        <span class="material-symbols-outlined text-sm chip-icon ${isSelected ? 'filled' : ''}">${isSelected ? 'check_circle' : 'functions'}</span>
         <span>${ex.number}: ${ex.title}</span>
       `;
       chip.addEventListener('click', () => {
@@ -121,13 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Encabezado
     exerciseTitle.textContent = `${ex.section} - ${ex.number}: ${ex.title}`;
-    exerciseSubtitle.textContent = `Taller ${ex.taller} • Intervalo de análisis: ${ex.interval}`;
+    exerciseSubtitle.innerHTML = `Taller ${ex.taller} • Intervalo: $${ex.interval}$`;
     exerciseFormula.innerHTML = `$$${ex.definitionLatex}$$`;
     
-    // Badges con iconos
+    // Badges con formato matemático KaTeX
     symmetryBadge.querySelector('.symmetry-text').textContent = ex.symmetry;
-    periodBadge.querySelector('.period-text').textContent = ex.period;
-    intervalBadge.querySelector('.interval-text').textContent = `Dominio: ${ex.interval}`;
+    periodBadge.querySelector('.period-text').innerHTML = `Período: $${ex.period}$`;
+    intervalBadge.querySelector('.interval-text').innerHTML = `Dominio: $${ex.interval}$`;
 
     // Mostrar el slider correspondiente
     if (ex.type === 'series') {
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const layout = {
       title: {
         text: `<b>${ex.title}</b> • Superposición Armónica e Integral`,
-        font: { size: 16, color: '#123062', family: 'Roboto, sans-serif' }
+        font: { size: 15, color: '#123062', family: 'Roboto, sans-serif' }
       },
       xaxis: {
         title: 'Variable independiente x',
@@ -268,9 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
         y: 1.02,
         xanchor: 'right',
         x: 1,
-        font: { family: 'Roboto, sans-serif', size: 12 }
+        font: { family: 'Roboto, sans-serif', size: 11 }
       },
-      margin: { l: 55, r: 25, t: 70, b: 50 },
+      margin: { l: 50, r: 20, t: 65, b: 45 },
       hovermode: 'closest',
       plot_bgcolor: '#ffffff',
       paper_bgcolor: '#ffffff'
@@ -291,10 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
     analyticalContainer.innerHTML = '';
     ex.analyticalSteps.forEach((step, index) => {
       const stepCard = document.createElement('div');
-      stepCard.className = 'm3-card-sub p-6';
+      stepCard.className = 'm3-card-sub p-5 sm:p-6 shadow-sm';
       stepCard.innerHTML = `
-        <h4 class="text-base font-bold text-[--md-sys-color-primary] mb-3 flex items-center gap-2.5">
-          <span class="w-8 h-8 rounded-full bg-[--md-sys-color-primary-container] text-[--md-sys-color-on-primary-container] text-xs flex items-center justify-center font-bold">
+        <h4 class="text-base font-bold text-[#123062] mb-3 flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-full bg-blue-100 text-[#123062] text-xs flex items-center justify-center font-bold">
             ${index + 1}
           </span>
           <span>${step.title}</span>
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <td class="py-2.5 px-3 font-mono font-medium">$x = ${pt.x}$</td>
             <td class="py-2.5 px-3 font-mono">$f(x^-) = ${pt.left}$</td>
             <td class="py-2.5 px-3 font-mono">$f(x^+) = ${pt.right}$</td>
-            <td class="py-2.5 px-3 font-mono font-bold text-[--md-sys-color-primary]">$S(x) = \\frac{${pt.left} + ${pt.right}}{2} = ${pt.mean}$</td>
+            <td class="py-2.5 px-3 font-mono font-bold text-[#123062]">$S(x) = \\frac{${pt.left} + ${pt.right}}{2} = ${pt.mean}$</td>
           </tr>
         `;
       });
@@ -332,8 +332,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dirichletContainer.innerHTML = `
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Teorema de Dirichlet -->
-        <div class="m3-card-sub p-6">
-          <div class="flex items-center gap-2 text-sm font-bold text-[--md-sys-color-primary] uppercase tracking-wide mb-3">
+        <div class="m3-card-sub p-5 sm:p-6 shadow-sm">
+          <div class="flex items-center gap-2 text-sm font-bold text-[#123062] uppercase tracking-wide mb-3">
             <span class="material-symbols-outlined text-blue-600">insights</span>
             <span>Teorema de Dirichlet en Discontinuidades</span>
           </div>
@@ -356,8 +356,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <!-- Fenómeno de Gibbs y Velocidad -->
-        <div class="m3-card-sub p-6">
-          <div class="flex items-center gap-2 text-sm font-bold text-[--md-sys-color-primary] uppercase tracking-wide mb-3">
+        <div class="m3-card-sub p-5 sm:p-6 shadow-sm">
+          <div class="flex items-center gap-2 text-sm font-bold text-[#123062] uppercase tracking-wide mb-3">
             <span class="material-symbols-outlined text-amber-600">warning</span>
             <span>Fenómeno de Gibbs y Velocidad</span>
           </div>
