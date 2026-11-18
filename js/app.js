@@ -68,20 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  // M3 Segmented Buttons: Selector de Taller (5 vs 6 vs Fórmula General)
+  // M3 Segmented Buttons: Selector de Taller (5 vs 6 vs Calculadora General de Fourier)
   const tabTaller5 = document.getElementById('tab-taller-5');
   const tabTaller6 = document.getElementById('tab-taller-6');
-  const tabFormulaGeneral = document.getElementById('tab-formula-general');
+  const tabFourierGeneral = document.getElementById('tab-fourier-general');
   const exercisesPillsContainer = document.getElementById('exercise-pills-container');
   const exercisePillsWrapper = document.getElementById('exercise-pills-wrapper');
   const exerciseCardRoot = document.getElementById('exercise-card-root');
-  const formulaGeneralCardRoot = document.getElementById('formula-general-card-root');
+  const fourierGeneralCardRoot = document.getElementById('fourier-general-card-root');
   const selectorHelperText = document.getElementById('selector-helper-text');
 
   function setFourierMode(visible) {
     if (exercisePillsWrapper) exercisePillsWrapper.classList.toggle('hidden', !visible);
     if (exerciseCardRoot) exerciseCardRoot.classList.toggle('hidden', !visible);
-    if (formulaGeneralCardRoot) formulaGeneralCardRoot.classList.toggle('hidden', visible);
+    if (fourierGeneralCardRoot) fourierGeneralCardRoot.classList.toggle('hidden', visible);
     if (selectorHelperText) selectorHelperText.classList.toggle('hidden', !visible);
   }
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.currentTaller = 5;
     tabTaller5.classList.add('active');
     tabTaller6.classList.remove('active');
-    if (tabFormulaGeneral) tabFormulaGeneral.classList.remove('active');
+    if (tabFourierGeneral) tabFourierGeneral.classList.remove('active');
     state.currentExerciseId = 't5_ej1';
     renderExerciseChips();
     loadCurrentExercise();
@@ -124,20 +124,20 @@ document.addEventListener('DOMContentLoaded', () => {
     state.currentTaller = 6;
     tabTaller6.classList.add('active');
     tabTaller5.classList.remove('active');
-    if (tabFormulaGeneral) tabFormulaGeneral.classList.remove('active');
+    if (tabFourierGeneral) tabFourierGeneral.classList.remove('active');
     state.currentExerciseId = 't6_ej2_gen';
     renderExerciseChips();
     loadCurrentExercise();
   });
 
-  if (tabFormulaGeneral) {
-    tabFormulaGeneral.addEventListener('click', () => {
+  if (tabFourierGeneral) {
+    tabFourierGeneral.addEventListener('click', () => {
       setFourierMode(false);
-      tabFormulaGeneral.classList.add('active');
+      tabFourierGeneral.classList.add('active');
       tabTaller5.classList.remove('active');
       tabTaller6.classList.remove('active');
-      if (typeof window.renderQuadraticCalculator === 'function') {
-        window.renderQuadraticCalculator();
+      if (typeof window.renderFourierGeneralCalculator === 'function') {
+        window.renderFourierGeneralCalculator();
       }
     });
   }
