@@ -308,7 +308,7 @@
 
     <!-- M3 SEGMENTED BUTTON: Selector de Taller -->
     <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-5 no-print">
-      <div class="m3-segmented-button-group shadow-sm flex w-full sm:w-auto">
+      <div class="m3-segmented-button-group shadow-sm flex flex-wrap w-full sm:w-auto">
         <button id="tab-taller-5" class="m3-segmented-button active flex-1 sm:flex-none justify-center">
           <span class="material-symbols-outlined text-lg">stacked_line_chart</span>
           <span>Taller 5: Series (6 Ejercicios)</span>
@@ -317,16 +317,20 @@
           <span class="material-symbols-outlined text-lg">all_inclusive</span>
           <span>Taller 6: Integrales (4 Ejercicios)</span>
         </button>
+        <button id="tab-formula-general" class="m3-segmented-button flex-1 sm:flex-none justify-center">
+          <span class="material-symbols-outlined text-lg">calculate</span>
+          <span>Fórmula General</span>
+        </button>
       </div>
 
-      <div class="text-xs text-slate-500 flex items-center gap-1.5 px-1">
+      <div id="selector-helper-text" class="text-xs text-slate-500 flex items-center gap-1.5 px-1">
         <span class="material-symbols-outlined text-sm text-blue-600">touch_app</span>
         <span>Selecciona un ejercicio abajo para ver su gráfica y deducción analítica</span>
       </div>
     </div>
 
     <!-- M3 FILTER CHIPS: Selector de Ejercicios -->
-    <div class="mb-6 overflow-x-auto pb-2 no-scrollbar no-print">
+    <div id="exercise-pills-wrapper" class="mb-6 overflow-x-auto pb-2 no-scrollbar no-print">
       <div id="exercise-pills-container" class="flex items-center gap-2 min-w-max">
         <!-- Rendered by app.js with .m3-chip -->
       </div>
@@ -479,6 +483,94 @@
 
     </div>
 
+    <!-- M3 MAIN CARD: CALCULADORA DE FÓRMULA GENERAL -->
+    <div id="formula-general-card-root" class="m3-card mb-8 hidden">
+      <div class="p-6 sm:p-8 border-b border-slate-200 bg-slate-50">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="qf-discriminant-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
+                <span class="material-symbols-outlined text-sm">analytics</span>
+                <span>Δ = 1 > 0 • 2 Raíces Reales Distintas</span>
+              </span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-[#123062] tracking-tight">
+              Calculadora de Fórmula General
+            </h2>
+            <p class="text-xs text-slate-500 font-medium">
+              Resuelve ecuaciones cuadráticas $ax^2 + bx + c = 0$ con análisis del discriminante, vértice, procedimiento paso a paso y gráfica interactiva.
+            </p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm w-full lg:w-auto text-center">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-xs text-blue-600">functions</span>
+              Ecuación Actual
+            </div>
+            <div id="qf-equation-display" class="text-base text-slate-900 font-serif">$$x^2 - 5x + 6 = 0$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 bg-white border-b border-slate-200 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div>
+            <label for="qf-input-a" class="block text-xs font-bold text-slate-700 mb-1.5">Coeficiente $a$ ($x^2$)</label>
+            <input type="number" step="any" id="qf-input-a" value="1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 font-mono text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <label for="qf-input-b" class="block text-xs font-bold text-slate-700 mb-1.5">Coeficiente $b$ ($x$)</label>
+            <input type="number" step="any" id="qf-input-b" value="-5" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 font-mono text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <label for="qf-input-c" class="block text-xs font-bold text-slate-700 mb-1.5">Término independiente $c$</label>
+            <input type="number" step="any" id="qf-input-c" value="6" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 font-mono text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <button id="qf-calculate-btn" class="w-full inline-flex items-center justify-center gap-2 bg-[#123062] hover:bg-blue-900 text-white text-xs font-bold py-3 px-5 rounded-xl shadow-sm transition-all">
+              <span class="material-symbols-outlined text-base">calculate</span>
+              <span>Calcular Raíces</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs font-semibold text-slate-500 mr-1">Ejemplos rápidos:</span>
+          <button type="button" class="qf-preset-btn m3-chip text-xs" data-a="1" data-b="-5" data-c="6">2 Raíces Reales (x² - 5x + 6 = 0)</button>
+          <button type="button" class="qf-preset-btn m3-chip text-xs" data-a="1" data-b="-4" data-c="4">1 Raíz Doble (x² - 4x + 4 = 0)</button>
+          <button type="button" class="qf-preset-btn m3-chip text-xs" data-a="1" data-b="2" data-c="5">Raíces Complejas (x² + 2x + 5 = 0)</button>
+        </div>
+
+        <div id="qf-error-box" class="hidden bg-red-50 text-red-800 border border-red-200 px-4 py-3 rounded-xl text-xs font-semibold"></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="m3-card-sub p-4 text-center">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Raíz $x_1$</div>
+            <div id="qf-x1-output" class="text-xl font-black font-mono text-[#123062]">3</div>
+          </div>
+          <div class="m3-card-sub p-4 text-center">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Raíz $x_2$</div>
+            <div id="qf-x2-output" class="text-xl font-black font-mono text-[#123062]">2</div>
+          </div>
+          <div class="m3-card-sub p-4 text-center">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Vértice de la Parábola</div>
+            <div id="qf-vertex-output" class="text-xl font-black font-mono text-amber-700">V(2.5, -0.25)</div>
+          </div>
+        </div>
+
+        <div class="m3-card-sub p-4 sm:p-6 shadow-sm">
+          <div id="qf-plotly-chart" class="w-full h-[360px] sm:h-[420px]"></div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-4">
+        <div class="flex items-center gap-2 text-sm font-bold text-[#123062]">
+          <span class="material-symbols-outlined text-lg">menu_book</span>
+          <span>Procedimiento Paso a Paso</span>
+        </div>
+        <div id="qf-steps-container" class="space-y-3"></div>
+      </div>
+    </div>
+
     <!-- ========================================== -->
     <!-- M3 CARD: GUÍA DE SUSTENTACIÓN ORAL -->
     <!-- ========================================== -->
@@ -602,6 +694,7 @@
   <!-- Scripts -->
   <script src="js/math_engine.js"></script>
   <script src="js/exercises_data.js"></script>
+  <script src="js/quadratic_calculator.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

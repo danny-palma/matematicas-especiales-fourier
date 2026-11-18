@@ -68,10 +68,22 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  // M3 Segmented Buttons: Selector de Taller (5 vs 6)
+  // M3 Segmented Buttons: Selector de Taller (5 vs 6 vs Fórmula General)
   const tabTaller5 = document.getElementById('tab-taller-5');
   const tabTaller6 = document.getElementById('tab-taller-6');
+  const tabFormulaGeneral = document.getElementById('tab-formula-general');
   const exercisesPillsContainer = document.getElementById('exercise-pills-container');
+  const exercisePillsWrapper = document.getElementById('exercise-pills-wrapper');
+  const exerciseCardRoot = document.getElementById('exercise-card-root');
+  const formulaGeneralCardRoot = document.getElementById('formula-general-card-root');
+  const selectorHelperText = document.getElementById('selector-helper-text');
+
+  function setFourierMode(visible) {
+    if (exercisePillsWrapper) exercisePillsWrapper.classList.toggle('hidden', !visible);
+    if (exerciseCardRoot) exerciseCardRoot.classList.toggle('hidden', !visible);
+    if (formulaGeneralCardRoot) formulaGeneralCardRoot.classList.toggle('hidden', visible);
+    if (selectorHelperText) selectorHelperText.classList.toggle('hidden', !visible);
+  }
 
   function renderExerciseChips() {
     exercisesPillsContainer.innerHTML = '';
@@ -97,22 +109,38 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   tabTaller5.addEventListener('click', () => {
+    setFourierMode(true);
     state.currentTaller = 5;
     tabTaller5.classList.add('active');
     tabTaller6.classList.remove('active');
+    if (tabFormulaGeneral) tabFormulaGeneral.classList.remove('active');
     state.currentExerciseId = 't5_ej1';
     renderExerciseChips();
     loadCurrentExercise();
   });
 
   tabTaller6.addEventListener('click', () => {
+    setFourierMode(true);
     state.currentTaller = 6;
     tabTaller6.classList.add('active');
     tabTaller5.classList.remove('active');
+    if (tabFormulaGeneral) tabFormulaGeneral.classList.remove('active');
     state.currentExerciseId = 't6_ej2_gen';
     renderExerciseChips();
     loadCurrentExercise();
   });
+
+  if (tabFormulaGeneral) {
+    tabFormulaGeneral.addEventListener('click', () => {
+      setFourierMode(false);
+      tabFormulaGeneral.classList.add('active');
+      tabTaller5.classList.remove('active');
+      tabTaller6.classList.remove('active');
+      if (typeof window.renderQuadraticCalculator === 'function') {
+        window.renderQuadraticCalculator();
+      }
+    });
+  }
 
   // Cargar datos y renderizar ejercicio actual
   function loadCurrentExercise() {
